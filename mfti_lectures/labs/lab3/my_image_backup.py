@@ -24,7 +24,6 @@ class Entity:
         self.x = pos[0];
         self.y = pos[1];
         self.color = color
-        self._color = color
     
 
 class Rectangle(Entity):
@@ -53,11 +52,13 @@ class RectangleBlockMenu(Rectangle):
         surface = pygame.Surface([self.size_x, self.size_y], pygame.SRCALPHA)
         rect(surface, self.background_color, (0, 0, self.size_x, self.size_y))
         rect(surface, self.color, (0, 0, self.size_x, self.size_y), self.width)
+        
         if self.figure == "rect":
             rect(surface, MOUNT_FRONT, (20, int(self.size_y/2) - int(self.size_y/5), self.size_x - 40, int(self.size_y/5)), 5)
         elif self.figure == "line":
             line(surface, MOUNT_FRONT, (20, int(self.size_y/2)), (self.size_x - 20,self.size_y/2), 5)
         elif self.figure == "circle":
+            print(int(self.size_x/5))
             circle(surface, MOUNT_FRONT, (self.size_x/2, self.size_y/2), int(self.size_x/5), 5)
 
         font = pygame.font.Font(None, 20)
@@ -66,17 +67,9 @@ class RectangleBlockMenu(Rectangle):
         screen.blit(surface, (self.x,self.y))
         screen.blit(text, place)
 
-
     def clicked(self, x, y):
         if x >= self.x and x <= self.x + self.size_x and y >= self.y and y <= self.y + self.size_y:
             print("clicked on " + self.figure)
-            self.color = (0,230,150)
-            return True
-        return False
-    
-
-    def return_color(self):
-        self.color = self._color;
 
 
 menus = []
@@ -301,6 +294,15 @@ def draw_menu(screen):
     for block in menus:
         block.draw(screen)
 
+    # surface = pygame.Surface([100,100], pygame.SRCALPHA)
+    # rect(surface, BG4, (0, 0, 100, 100))
+    # rect(surface, MOUNT_FRONT_FIRST, (0, 0, 100, 100), 20)
+    # circle(surface, MOUNT_FRONT, (50,50), 23, 5)
+    # font = pygame.font.Font(None, 20)
+    # text = font.render("draw circle", True, YELLOW)
+    # place = text.get_rect(center=(280,90))
+    # screen.blit(surface, (230,10))
+    # screen.blit(text, place)
 
 def write_circle(screen, start_pos, now_pos):
     a = abs(start_pos[0] - now_pos[0])
@@ -336,8 +338,6 @@ def main():
 
     while not finished:
         clock.tick(FPS)
-        draw_menu(screen)
-        pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
@@ -350,11 +350,8 @@ def main():
                 # write_circle(screen, position_draw_circle, event.pos)
                 print("mouse drawing")
             if event.type == pygame.MOUSEBUTTONUP:
-                for button in menus:
-                    if button.clicked(event.pos[0], event.pos[1]):
-                        for btn in menus:
-                            btn.return_color()
-                        button.clicked(event.pos[0], event.pos[1])
+                # for button in menus:
+                #     button.clicked(event.pos[0], event.pos[1])
                 draw = False
                 print("mouse up")
     pygame.quit()

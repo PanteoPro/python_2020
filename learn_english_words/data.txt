@@ -1,0 +1,8 @@
+страна country
+место place
+ситуация case
+услуга service
+причина reason
+сила force
+привет hello
+либо either

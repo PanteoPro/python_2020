@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тренировка</title>
+
+    <script src="eel.js"></script>
+    <link rel="icon" type="image\png" href="img/icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        #second  {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div id="first">
+        <div class="text">Выберите</div>
+        <button id="enter_ru" class="btn btn2">Писать русские</button>
+        <button id="enter_en" class="btn btn2">Писать английские</button>
+    </div>
+
+
+    <div id="second">
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <input id="word_ru" type="text" placeholder="Русское слово">
+            <img src="img/arrow_right.png" style="width:52px; height: 52px;margin: 0 10px;">
+            <input id="word_en" type="text" placeholder="Английское слово">
+        </div>
+        <br>
+        <div class="text"></div>
+        <button id="enter1" class="btn btn2">Проверить</button>
+        <button id="enter2" class="btn btn2">Пропустить</button>
+    </div>
+
+    <script>
+
+        let first = document.getElementById("first");
+        let second = document.getElementById("second");
+        let img = document.getElementsByTagName("img")[0];
+        let container = document.getElementsByClassName("text")[1];
+
+        let placement;
+        let game_mode = 0; // 0 - RU 1 - EN
+        let data = [];
+        let number_of_data = 0;
+        let all_words;
+        let end = false;
+
+
+
+        function step(){
+            if (number_of_data != data.length){
+                if (game_mode == 0){
+                    placement.value = data[number_of_data][1];
+                    getment.value = ""
+                } else {
+                    placement.value = data[number_of_data][0];
+                    getment.value = ""
+                }
+                number_of_data++;
+                container.innerHTML = number_of_data + " / " + all_words;
+                getment.focus()
+            } else {
+                container.innerHTML = "Поздравляю!"
+                setTimeout(function(){
+                    window.location.href = "index.html";
+                }, 5000)
+            }
+        }
+
+        async function start(){
+            first.style.display = "none"
+            second.style.display = "block"
+            if (game_mode == 0){
+                img.src = "img/arrow_right.png";
+                placement = document.getElementById("word_en")
+                getment = document.getElementById("word_ru")
+            } else {
+                img.src = "img/arrow_left.png";
+                placement = document.getElementById("word_ru")
+                getment = document.getElementById("word_en")
+            }
+            placement.readOnly = true;
+            eel.shuffle()
+            data = await eel.get_words()();
+            all_words = data.length;
+            step();
+        }
+
+        async function check_word(){
+            console.log("hello")
+            let res = await eel.equal_words(getment.value, data[number_of_data-1][game_mode])();
+            console.log(res)
+            if (res){
+                img.style.background = "green"
+                setTimeout(function(){img.style.background = "none"}, 3000)
+                step()
+            } else {
+                container.innerHTML = number_of_data + " / " + all_words + "<br>"
+                container.innerHTML += "<i style='color: red'>Вы ошиблись! Подумайте лучше!</i>" 
+            }
+        }
+
+        document.getElementById("enter1").addEventListener("click", function(event){
+            check_word()
+        })
+
+        window.addEventListener("keydown", function(event){
+            if (event.keyCode == 13 || event.keyCode == 32)
+                check_word()
+        })
+
+        document.getElementById("enter2").addEventListener("click", function(event){
+            step()
+        })
+
+        document.getElementById("enter_ru").addEventListener("click", function(event){
+            game_mode = 0
+            start()
+        })
+
+        document.getElementById("enter_en").addEventListener("click", function(event){
+            game_mode = 1
+            start()
+        })
+
+    </script>
+
+</body>
+</html>

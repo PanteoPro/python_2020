@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список всех слов</title>
+
+    <script src="eel.js"></script>
+    <link rel="icon" type="image\png" href="img/icon.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+
+    
+    <a href="index.html"><button class="btn">Вернуться в меню</button></a>
+    <table id="table">
+        <tr>
+            <td>Русское слово</td>
+            <td>Английское слово</td>
+        </tr>
+    </table>
+
+    <script>
+
+        table = document.getElementById("table");
+
+        async function display_data(){
+            
+            let words = await eel.get_words()();
+            let tr, td;
+
+            for(let i = 0; i < words.length; i++){
+                tr = document.createElement("tr");
+                td1 = document.createElement("td");
+                td1.innerHTML = words[i][0];
+                td2 = document.createElement("td");
+                td2.innerHTML = words[i][1];
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                table.appendChild(tr);
+            }
+        }
+
+        display_data()
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление слова</title>
+
+    <script src="eel.js"></script>
+    <link rel="icon" type="image\png" href="img/icon.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+
+    <div style="display: inline-block; width: 100%">
+        <input id="word_ru" type="text" placeholder="Русское слово">
+        <br>
+        <input id="word_en" type="text" placeholder="Английское слово">
+    </div>
+    <button id="enter" class="btn btn2">Добавить</button>
+    <br>
+    <div class="text">Введите в первое поле русское слов, во второе перевод на английский</div>
+    <a href="index.html"><button class="btn">Вернуться в меню</button></a>
+
+    <script>
+
+        let container = document.getElementsByClassName("text")[0]
+        let word_ru = document.getElementById("word_ru");
+        let word_en = document.getElementById("word_en");
+
+
+        function print_error(text){
+            container.style.color = "red"
+            container.innerHTML = text
+        }
+
+        function print_text(text){
+            container.style.color = "black"
+            container.innerHTML = text
+        }
+
+
+        async function send_word(){
+            
+            res = await eel.add_word(word_ru.value,word_en.value)();
+
+            if(res){
+                print_text("Успешно добавлено!<br>Пара: " + word_ru.value + " - " + word_en.value);
+                word_ru.value = "";
+                word_en.value = "";
+            } else {
+                print_error("Такая пара уже есть");
+            }
+
+        }
+
+        document.getElementById("enter").addEventListener("click", function(event){
+            if (word_ru.value == "") print_error("Вы не ввели русское слово!");
+            else if (word_en.value == "") print_error("Вы не ввели английское слово!");
+            else if (word_ru.value == word_en.value) print_error("Ошибка ввода слов, проверьте правильность ввода")
+            else send_word()
+        })
+
+    </script>
+
+</body>
+</html>
