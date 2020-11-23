@@ -15,6 +15,7 @@ class DateManager:
 
 
     def load_data(self):
+        print(self._filename)
         with open(self._filename, "r", encoding="utf-8") as f:
             for line in f:
                 self._words.append(line.replace("\n", "").split(" "))
